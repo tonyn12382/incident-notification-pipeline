@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Install dependencies') {
+            steps {
+                sh 'python3 -m pip install -r requirements.txt'
+            }
+        }
+
+        stage('Run tests') {
+            steps {
+                sh 'pytest --json-report --json-report-file=results.json || true'
+            }
+        }
+    }
+
+    post {
+        always {
+            sh 'python3 notify.py || true'
+        }
+    }
+}
