@@ -1,13 +1,9 @@
 pipeline {
-    agent {
-        docker {
-            image 'python:3.11'   // Official Python image from Docker Hub
-        }
-    }
+    agent any
     stages {
         stage('Install dependencies') {
             steps {
-                sh 'pip install -r requirements.txt'
+                sh 'python3 -m pip install -r requirements.txt'
             }
         }
         stage('Run tests') {
@@ -17,8 +13,9 @@ pipeline {
         }
         stage('Notify') {
             steps {
-                sh 'python notify.py'
+                sh 'python3 notify.py'
             }
         }
     }
 }
+
