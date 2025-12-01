@@ -1,29 +1,24 @@
 pipeline {
-    agent any
-
-    stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
-        stage('Install dependencies') {
-            steps {
-                sh 'python3 -m pip install -r requirements.txt'
-            }
-        }
-
-        stage('Run tests') {
-            steps {
-                sh 'pytest --json-report --json-report-file=results.json || true'
-            }
+    agent {
+        docker {
+            image 'python:3.11'   // Official Python image from Docker Hub
         }
     }
-
-    post {
-        always {
-            sh 'python3 notify.py || true'
+    stages {
+        stage('Install dependencies') {
+            steps {
+                sh 'pip install -r requirements.txt'
+            }
+        }
+        stage('Run tests') {
+            steps {
+                sh 'pytest test_calc.py'
+            }
+        }
+        stage('Notify') {
+            steps {
+                sh 'python notify.py'
+            }
         }
     }
 }
